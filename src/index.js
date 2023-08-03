@@ -30,7 +30,7 @@ const PORT = process.env.PORT || 3000
 
 /* config */
 app.use(express.json())
-app.use(express.urlencoded({extended:true}))
+app.use(express.urlencoded({extended:false}))
 app.use(cors())
 app.use(attachPuppeteer)
 
@@ -38,8 +38,9 @@ app.use(attachPuppeteer)
 app.use(require('./routes/traffic_signal'))
 
 async function start_server(){
-    await init_puppeteer()
-    app.listen(PORT, ()=>{
+    
+    app.listen(PORT, async()=>{
+        await init_puppeteer()
         console.log(`Express server running on port ${PORT}`);
     })
 }

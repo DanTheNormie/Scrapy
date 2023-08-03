@@ -1,12 +1,4 @@
-/* const { param } = require('../../routes/dashboard_route');
-const taskIsValid = require('./taskChecker');
-const data = require('./newTask.json')
-const puppeteer = require('puppeteer-extra')
-const StealthPlugin = require('puppeteer-extra-plugin-stealth')
-const useProxy = require('puppeteer-page-proxy');
-puppeteer.use(StealthPlugin())
-let browser;
-let page; */
+const isTaskValid = require('./taskChecker')
 
 async function fetchData(page, selector, target ,isArray = false){
     let result;
@@ -15,34 +7,31 @@ async function fetchData(page, selector, target ,isArray = false){
 
         if(target !== 'innerText') { 
             if(isArray){
-                page = (elements)=>elements.map((e)=>{
-                    if(e.hasAttribute(target)){
-                        return e.getAttribute(target)
+                pageFunction = (elements, targ)=>elements.map((e)=>{
+                    if(e.hasAttribute(targ)){
+                        return e.getAttribute(targ)
                     }
                     return e.innerText
                 })
             }else{
-                pageFunction = (e)=>{
-                    if(e.hasAttribute(target)){
-                        return e.getAttribute(target)
+                pageFunction = (e, targ)=>{
+                    if(e.hasAttribute(targ)){
+                        return e.getAttribute(targ)
                     }
                     return e.innerText
                 }
-            } 
+            }
         }else{
             if(isArray){
                 pageFunction = (elements)=>elements.map((e)=>e.innerText)
             }else{
                 pageFunction = (e)=>e.innerText
             }
-            
         }
-        
-
         if(isArray){
-            result = page.$$eval(selector, pageFunction)
+            result = await page.$$eval(selector, pageFunction, target)
         }else{
-            result = page.$eval(selector,pageFunction)
+            result = await page.$eval(selector, pageFunction)
         }
     }catch(err){
         console.error(err);
@@ -84,7 +73,7 @@ async function processTask(page, task){
                 }
 
                 if(!currentResults[name]) {
-                    console.error(' Wrong Selector!!!. no data found for :-\n', '{name : ',name, ', selector : ',selector,'}\n\n');
+                    console.error(' Wrong Selector!!!. no data found for :-\n', '{name : ',name, ', selector :',selector,'}\n\n');
                 }
             }
         }
@@ -92,8 +81,10 @@ async function processTask(page, task){
         if(task.result.format === 'array'){
             let max_len = 0;
             Object.keys(currentResults).forEach((key, idx)=>{
-                if(max_len < currentResults[key].length) {
-                    max_len = currentResults[key].length
+                if(Array.isArray(currentResults[key])){
+                    if(max_len < currentResults[key].length) {
+                        max_len = currentResults[key].length
+                    }
                 }
             })
             
@@ -102,8 +93,10 @@ async function processTask(page, task){
             }
 
             Object.keys(currentResults).forEach((key, idx)=>{
-                for(let i=0; i<currentResults[key].length; i++){
-                    finalResults[i][key] = currentResults[key][i]
+                if(Array.isArray(currentResults[key])){
+                    for(let i=0; i<currentResults[key].length; i++){
+                        finalResults[i][key] = currentResults[key][i]
+                    }
                 }
             })
         }else{
@@ -117,46 +110,16 @@ async function processTask(page, task){
     }
 }
 
-
-module.exports = processTask
-
-
-/* 
-async function processTasks(page, data){
-    try{
-        if( !data || 
-            !Array.isArray(data.tasks) ||
-            data.tasks.length === 0
-        ){
-            throw new Error ('Invalid Json format or no tasks found.')
-        }
-
-        const finalResults = [];
-        for(const task of data.tasks){
-            if(taskIsValid(task)){
-                const result = await processTask(page, task)
-                finalResults.push(result)
-            }
-        }
-        console.log('Final Results : ',finalResults);
-        return finalResults
-
-    }catch(err){
-        console.error('Error reading or parsing JSON file:', error);
+async function run_task(page, task){
+    if(isTaskValid(task)){
+        return await processTask(page, task)
     }
 }
- *//* 
-async function check_tasks(data){
-    
-    browser = await puppeteer.launch({headless:'new'});
-    page = await browser.newPage()
 
-    await processTasks(page,data)
+module.exports = run_task
 
-    await browser.close()
-    
-}
- */
+
+
 
 
 

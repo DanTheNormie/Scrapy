@@ -1,10 +1,13 @@
 const router = require('express').Router()
 
-const {get_domains, get_title} = require('../controllers/dashboard-controller')
+const {get_title, custom_scrape, getDomains, getDataFrom1337x} = require('../controllers/dashboard-controller')
 
-router.get('/testpb', get_domains)
 router.get('/getTitle', get_title)
 
-router.post('/customscrape,')
+router.get('/getDomains', getDomains)
+
+router.post('/customscrape', custom_scrape)
+
+router.post('/getDataFrom1337x', getDataFrom1337x)
 
 module.exports = router
