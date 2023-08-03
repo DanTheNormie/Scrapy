@@ -1,0 +1,15 @@
+{
+    "url":"https://1337x.unblockit.rsvp/search/spiderman/1/",
+    "selectors":[
+        {
+            "name":"title",
+            "format":"array",
+            "target":"href",
+            "selector":".coll-1 > a:nth-child(2)"
+        }
+    ],
+    "result":{
+        "format":"array",
+        "data":["title"]
+    }
+}

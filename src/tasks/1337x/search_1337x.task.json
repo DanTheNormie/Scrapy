@@ -1,0 +1,51 @@
+{
+    "url":"https://1337x.unblockit.rsvp/search/{{search_text}}/200/",
+    "params":{
+        "search_text":{
+            
+            "default":"Avengers",
+            "required":true
+        },
+        "page_number":{
+            "default":1,
+            "required":true
+        }
+    },
+    "selectors":[
+        {
+            "name":"title",
+            "format":"array",
+            "target":"innerText",
+            "selector":"tbody tr .coll-1.name a:nth-child(2)"
+        },
+        {
+            "name":"seeders",
+            "format":"array",
+            "target":"innerText",
+            "selector":"tbody tr .coll-2.seeds"
+        },
+        {
+            "name":"leechers",
+            "format":"array",
+            "target":"innerText",
+            "selector":"tbody tr .coll-3.leeches"
+        },
+        {
+            "name":"size",
+            "format":"array",
+            "target":"innerText",
+            "selector":"tbody tr .coll-4.size"
+        },
+        {
+            "name":"torrent_details_page_link",
+            "format":"array",
+            "target":"href",
+            "selector":".coll-1.name > a:nth-child(2)"
+        }
+    ],
+    "result":{
+        "format":"array",
+        "parentElementSelector":"tbody > tr",
+        "data":["title","seeders","leechers","size","torrent_details_page_link"]
+    }
+}

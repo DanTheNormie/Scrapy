@@ -1,0 +1,45 @@
+{
+    "url": "https://bingewatch.to/search?keyword={{search_text}}",
+    "params": {
+        "search_text": {
+            "default": "spidermanasdasxc",
+            "required": true
+        }
+    },
+    "selectors": [
+        {
+            "name": "title",
+            "format": "array",
+            "target": "innerText",
+            "selector": ".movie-name"
+        },
+        {
+            "name": "img_url",
+            "format": "array",
+            "target": "src",
+            "selector": ".movie-thumbnail > a > img"
+        },
+        {
+            "name": "details_link",
+            "format": "array",
+            "target": "href",
+            "selector": ".movie-link"
+        },
+        {
+            "name": "info",
+            "format": "array",
+            "target": "innerText",
+            "selector": ".info-split"
+        }
+    ],
+    "result": {
+        "format": "array",
+        "parentElementSelector":".section-items.section-items-default > .item",
+        "data": [
+            "title",
+            "img_url",
+            "info",
+            "details_link"
+        ]
+    }
+}
