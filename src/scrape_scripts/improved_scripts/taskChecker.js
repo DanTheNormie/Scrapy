@@ -93,7 +93,7 @@ function taskIsValid(task) {
 
 function taskIsValid2(task) {
     if (!task || typeof task !== 'object') {
-        return { success: false, message: 'Invalid task object' };
+        return { success: false, message: 'Invalid task object : correct format is {task : <your_task>}' };
     }
 
     if (!task.url || typeof task.url !== 'string') {
@@ -131,19 +131,19 @@ function taskIsValid2(task) {
         }
 
         if (!selectorInfo.name || typeof selectorInfo.name !== 'string') {
-            return { success: false, message: 'Each selector must have a non-empty "name" attribute of type string' };
+            return { success: false, message: 'Selectors must have a non-empty "name" attribute of type string' };
         }
 
         if (!selectorInfo.selector || typeof selectorInfo.selector !== 'string') {
-            return { success: false, message: 'Each selector must have a non-empty "selector" attribute of type string' };
+            return { success: false, message: `Selector with {name:${selectorInfo.name}} must have a non-empty "selector" attribute of type string` };
         }
 
         if (!selectorInfo.format || typeof selectorInfo.format !== 'string') {
-            return { success: false, message: 'Each selector must have a non-empty "format" attribute of type string' };
+            return { success: false, message: `Selector with {name:${selectorInfo.name}} must have a non-empty "format" attribute of type string` };
         }
 
         if (!selectorInfo.target || typeof selectorInfo.target !== 'string') {
-            return { success: false, message: 'Each selector must have a non-empty "target" attribute of type string' };
+            return { success: false, message: `Selector with {name:${selectorInfo.name}} must have a non-empty "target" attribute of type string` };
         }
     }
 
@@ -164,7 +164,7 @@ function taskIsValid2(task) {
     if (task.result.format === 'array') {
         for (const selectorInfo of task.selectors) {
             if (selectorInfo.format === 'single') {
-                return { success: false, message: 'Invalid "result.format", one or many selectors have format of type "single"' };
+                return { success: false, message: `Invalid "result.format" for selector with name : "${selectorInfo.name}", one or many selectors have format of type "single" while "result.format" is "array"` };
             }
         }
     }

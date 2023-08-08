@@ -11,7 +11,8 @@ async function get_title(req,res){
 }
 
 async function custom_scrape(req, res){
-    const {browser, page} = req.puppeteer
+    const {browser} = req.puppeteer
+    const page = await browser.newpage()
     const {task} = req.body
     console.log(task);
     try{
@@ -34,6 +35,8 @@ async function custom_scrape(req, res){
             message:"Request Failed (or) No result for given data",
             error:err.message
         })
+    }finally{
+        page.close()
     }
 }
 
@@ -46,35 +49,45 @@ async function fetchMagnetLinks(torrents_data_array, details_task, browser) {
         page.close()
         return { ...torrent_data, magnet_link };
     });
-  
     return await Promise.all(fetchMagnetLinkPromises);
-  }
+}
 
 async function getDataFrom1337x(req,res){
-    const {browser, page} = req.puppeteer
-    const {search_text} = req.body
+    const {browser} = req.puppeteer
+    const page = await browser.newPage()
+    const {keyword} = req.query
     const search_task = domains.find((e)=>e['domain_name']==="1337x").urls.find((e)=>e['name']==="Search").task
     const details_task = domains.find((e)=>e['domain_name']==="1337x").urls.find((e)=>e['name']==="Details").task
-    console.log(search_task.params['search_text'].value);
     
     
-    search_task.params['search_text'].value = search_text
-    let torrents_data_with_magnet_links
+    
+    search_task.params['search_text'].value = keyword
+    
     try{
+
         let torrents_data_array = await taskRunner(page, search_task)
-        torrents_data_with_magnet_links = await fetchMagnetLinks(torrents_data_array, details_task, browser);
+        torrents_data_array =  await fetchMagnetLinks(torrents_data_array, details_task, browser);
+    
+        console.log(torrents_data_array);
+        
+        return res.json({
+            success:true,
+            data:torrents_data_array,
+            message:'Data Fetched Successfully'
+        })
+
     }catch(err){
+        
         return res.json({
             success:false,
             message:"Request Failed (or) No data for given data",
             error:err.message
         })
+    }finally{
+        page.close()
     }
     
-    console.log(torrents_data_with_magnet_links);
-
-
-    return res.json(torrents_data_with_magnet_links)
+    
 
     /* Takes ~11s to run */
     /* for(let i=0; i<torrents_data_array.length; i++){
@@ -96,6 +109,71 @@ async function getDataFrom1337x(req,res){
     /* async optimized take ~5s to run */
 }
 
+async function getDataFromPirateBay(req,res){
+    const {browser} = req.puppeteer
+    const page = await browser.newPage()
+    const {keyword} = req.query
+    const search_task = domains.find((e)=>e['domain_name']==="Pirate-Bay").urls.find((e)=>e['name']==="Search").task
+
+    search_task.params['search_text'].value = keyword
+
+    try{
+        const torrents_data_array = await taskRunner(page, search_task)
+        console.log(torrents_data_array);
+
+        if(torrents_data_array[0].title === 'No results returned'){
+            return res.status(404).json({
+                success:false,
+                message:"No Data found for given Keyword"
+            })
+        }
+       
+        return res.json({
+            success:true,
+            data:torrents_data_array,
+            message:'Data Fetched Successfully'
+        })
+    }catch(err){
+        
+        return res.json({
+            success:false,
+            message:"Request Failed (or) No data for given keyword",
+            error:err.message
+        })
+    }finally{
+        page.close()
+    }
+}
+
+async function getDataFromBingeWatch(req, res){
+    const {browser} = req.puppeteer
+    const page = await browser.newPage()
+    const {keyword} = req.query
+    const search_task = domains.find((e)=>e['domain_name']==="Binge-Watch").urls.find((e)=>e['name']==="Search").task
+
+    search_task.params['search_text'].value = keyword
+
+    try{
+        const streams_data_array = await taskRunner(page, search_task)
+        console.log(streams_data_array);
+        res.json({
+            success: true,
+            data: streams_data_array,
+            message: 'Data Fectched Successfully'
+        })
+
+    }catch(err){
+        console.log(err);
+        return res.json({
+            success:false,
+            message:"Request Failed (or) No data for given keyword",
+            error:err.message
+        })
+    }finally{
+        page.close()
+    }
+}
+
 async function getDomains(req, res){
     res.json({
         success:true,
@@ -109,5 +187,7 @@ module.exports = {
     get_title,
     custom_scrape,
     getDomains,
-    getDataFrom1337x
+    getDataFrom1337x,
+    getDataFromPirateBay,
+    getDataFromBingeWatch
 }

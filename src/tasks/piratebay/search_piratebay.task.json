@@ -14,6 +14,24 @@
             "selector":".list-entry .list-item.item-name.item-title a"
         },
         {
+            "name":"uploaded_on",
+            "format":"array",
+            "target":"innerText",
+            "selector":".list-entry .list-item.item-uploaded label"
+        },
+        {
+            "name":"magnet_link",
+            "format":"array",
+            "target":"href",
+            "selector":".list-entry .item-icons a"
+        },
+        {
+            "name":"size",
+            "format":"array",
+            "target":"innerText",
+            "selector":".list-entry .list-item.item-size"
+        },
+        {
             "name":"seeders",
             "format":"array",
             "target":"innerText",
@@ -26,28 +44,10 @@
             "selector":".list-entry .list-item.item-leech"
         },
         {
-            "name":"size",
-            "format":"array",
-            "target":"innerText",
-            "selector":".list-entry .list-item.item-size"
-        },
-        {
             "name":"uploaded_by",
             "format":"array",
             "target":"innerText",
             "selector":".list-entry .list-item.item-user a"
-        },
-        {
-            "name":"uploaded_on",
-            "format":"array",
-            "target":"innerText",
-            "selector":".list-entry .list-item.item-uploaded label"
-        },
-        {
-            "name":"magnet_link",
-            "format":"array",
-            "target":"href",
-            "selector":".list-entry .item-icons a"
         },
         {
             "name":"torrent_details_page_link",

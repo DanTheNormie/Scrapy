@@ -1,5 +1,5 @@
 {
-    "url":"https://1337x.unblockit.rsvp/search/{{search_text}}/200/",
+    "url":"https://1337x.unblockit.rsvp/search/{{search_text}}/1/",
     "params":{
         "search_text":{
             
@@ -19,6 +19,19 @@
             "selector":"tbody tr .coll-1.name a:nth-child(2)"
         },
         {
+            "name":"uploaded_on",
+            "format":"array",
+            "target":"innerText",
+            "selector":"tbody tr .coll-date"
+        },
+        {
+            "name":"size",
+            "format":"array",
+            "target":"innerText",
+            "selector":"tbody tr .coll-4.size"
+        },
+        
+        {
             "name":"seeders",
             "format":"array",
             "target":"innerText",
@@ -31,12 +44,6 @@
             "selector":"tbody tr .coll-3.leeches"
         },
         {
-            "name":"size",
-            "format":"array",
-            "target":"innerText",
-            "selector":"tbody tr .coll-4.size"
-        },
-        {
             "name":"torrent_details_page_link",
             "format":"array",
             "target":"href",
@@ -46,6 +53,13 @@
     "result":{
         "format":"array",
         "parentElementSelector":"tbody > tr",
-        "data":["title","seeders","leechers","size","torrent_details_page_link"]
+        "data":[
+            "title",
+            "seeders",
+            "leechers",
+            "size",
+            "uploaded_on",
+            "torrent_details_page_link"
+        ]
     }
 }
