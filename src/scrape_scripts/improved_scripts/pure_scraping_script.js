@@ -123,7 +123,7 @@ async function scrape(task, page){
             await page.goto(url/* , {waitUntil : 'networkidle2'} */)
 
         }catch(err){
-            console.log(`Couldn't go to page : ${url}`);
+            console.log(`Error : ${err}`);
             throw new Error(`Couldn't go to page : ${url}`)
         }
 

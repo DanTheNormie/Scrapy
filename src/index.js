@@ -9,17 +9,16 @@ const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 const useProxy = require('puppeteer-page-proxy');
 puppeteer.use(StealthPlugin())
 let browser;
-let page;
 
 async function init_puppeteer(){
     browser = await puppeteer.launch({headless:'new'});
-    page = await browser.newPage()
+    
     console.log('puppeteer running...')
 }
 
 async function attachPuppeteer(req, res, next){
     if(!req.puppeteer){
-        req.puppeteer = {browser, page}
+        req.puppeteer = {browser}
     }
     next()
 }
