@@ -1,0 +1,51 @@
+{
+    "url": "{{base_url}}/?s={{search_text}}",
+    "params": {
+        "base_url": {
+            "value": "https://fitgirl-repacks.site",
+            "required": true
+        },
+        "search_text": {
+            "value": "hitman",
+            "default": "Avengers",
+            "required": true
+        }
+    },
+    "selectors": [
+        {
+            "name": "title",
+            "format": "array",
+            "target": "innerText",
+            "selector": ".entry-header > .entry-title > a"
+        },
+        {
+            "name": "desc",
+            "format": "array",
+            "target": "innerText",
+            "selector": ".entry-summary > p"
+        },
+        {
+            "name": "uploaded_on",
+            "format": "array",
+            "target": "innerText",
+            "selector": ".entry-header > .entry-meta > .entry-date > a > time"
+        },
+        {
+            "name": "details_page_link",
+            "format": "array",
+            "target": "href",
+            "selector": ".entry-header > .entry-title > a"
+        }
+    ],
+    "result": {
+        "format": "array",
+        "waitForSelector": "#primary",
+        "parentElementSelector": "#primary > .site-content > article",
+        "data": [
+            "title",
+            "desc",
+            "uploaded_on",
+            "details_page_link"
+        ]
+    }
+}

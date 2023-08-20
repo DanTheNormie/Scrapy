@@ -6,7 +6,13 @@ const {
     getDomains, 
     getDataFrom1337x,
     getDataFromPirateBay,
-    getDataFromBingeWatch
+    getDataFromBingeWatch,
+    getDataFromSoaperTv,
+    getDataFromCataz,
+    getDataFromFlixHQ,
+    getDataFromFitgirl,
+    getDataFromSevenGamers
+    
 } = require('../controllers/dashboard-controller')
 
 router.get('/getTitle', get_title)
@@ -21,6 +27,15 @@ router.get('/getDataFrom1337x', getDataFrom1337x)
 
 router.get('/getDataFromBingeWatch', getDataFromBingeWatch)
 
+router.get('/getDataFromSoaperTv', getDataFromSoaperTv)
+
+router.get('/getDataFromCataz', getDataFromCataz)
+
+router.get('/getDataFromFlixHQ', getDataFromFlixHQ)
+
+router.get('/getDataFromFitgirl', getDataFromFitgirl)
+
+router.get('/getDataFromSevenGamers', getDataFromSevenGamers)
 
 
 module.exports = router

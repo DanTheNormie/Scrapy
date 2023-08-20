@@ -1,4 +1,3 @@
-const runTask = require('../scrape_scripts/json_based_scraping/json_scrape_script')
 const taskRunner = require('../scrape_scripts/improved_scripts/pure_scraping_script')
 const domains = require('../tasks/catalog_of_tasks')
 const delay = ms => new Promise(res => setTimeout(res, ms));
@@ -12,7 +11,7 @@ async function get_title(req,res){
 
 async function custom_scrape(req, res){
     const {browser} = req.puppeteer
-    const page = await browser.newpage()
+    const page = await browser.newPage()
     const {task} = req.body
     console.log(task);
     try{
@@ -40,7 +39,7 @@ async function custom_scrape(req, res){
     }
 }
 
-async function fetchMagnetLinks(torrents_data_array, details_task, browser) {
+async function fetchMagnetLinksFrom1337x(torrents_data_array, details_task, browser) {
     const fetchMagnetLinkPromises = torrents_data_array.map(async (torrent_data) => {
         const page = await browser.newPage()
         const details_url = `https://1337x.unblockit.rsvp${torrent_data['torrent_details_page_link']}`;
@@ -66,7 +65,7 @@ async function getDataFrom1337x(req,res){
     try{
 
         let torrents_data_array = await taskRunner(page, search_task)
-        torrents_data_array =  await fetchMagnetLinks(torrents_data_array, details_task, browser);
+        torrents_data_array =  await fetchMagnetLinksFrom1337x(torrents_data_array, details_task, browser);
     
         console.log(torrents_data_array);
         
@@ -174,6 +173,162 @@ async function getDataFromBingeWatch(req, res){
     }
 }
 
+async function getDataFromSoaperTv(req, res){
+    const {browser} = req.puppeteer
+    const page = await browser.newPage()
+    const {keyword} = req.query
+    const search_task = domains.find((e)=>e['domain_name']==="SoaperTv").urls.find((e)=>e['name']==="Search").task
+    search_task.params['search_text'].value = keyword
+
+    try{
+        const streams_data_array = await taskRunner(page, search_task)
+        console.log(streams_data_array);
+        res.json({
+            success: true,
+            data: streams_data_array,
+            message: 'Data Fectched Successfully'
+        })
+
+    }catch(err){
+        console.log(err);
+        return res.json({
+            success:false,
+            message:"Request Failed (or) No data for given keyword",
+            error:err.message
+        })
+    }finally{
+        page.close()
+    }
+}
+
+async function getDataFromFlixHQ(req, res){
+    const {browser} = req.puppeteer
+    const page = await browser.newPage()
+    const {keyword} = req.query
+    const search_task = domains.find((e)=>e['domain_name']==="FlixHQ").urls.find((e)=>e['name']==="Search").task
+    search_task.params['search_text'].value = keyword
+
+    try{
+        const streams_data_array = await taskRunner(page, search_task)
+        console.log(streams_data_array);
+        res.json({
+            success: true,
+            data: streams_data_array,
+            message: 'Data Fectched Successfully'
+        })
+
+    }catch(err){
+        console.log(err);
+        return res.json({
+            success:false,
+            message:"Request Failed (or) No data for given keyword",
+            error:err.message
+        })
+    }finally{
+        page.close()
+    }
+}
+
+async function getDataFromCataz(req, res){
+    const {browser} = req.puppeteer
+    const page = await browser.newPage()
+    const {keyword} = req.query
+    const search_task = domains.find((e)=>e['domain_name']==="Cataz").urls.find((e)=>e['name']==="Search").task
+    search_task.params['search_text'].value = keyword
+
+    try{
+        const streams_data_array = await taskRunner(page, search_task)
+        console.log(streams_data_array);
+        res.json({
+            success: true,
+            data: streams_data_array,
+            message: 'Data Fectched Successfully'
+        })
+
+    }catch(err){
+        console.log(err);
+        return res.json({
+            success:false,
+            message:"Request Failed (or) No data for given keyword",
+            error:err.message
+        })
+    }finally{
+        page.close()
+    }
+}
+
+async function getImagesFromFitgirl(games_list, details_task, browser){
+    const fetch_img_urls = games_list.map(async (game_details) => {
+        const page = await browser.newPage()
+        const details_url = game_details['details_page_link'];
+        console.log(JSON.stringify(details_task.params,null,'\t'));
+        details_task.params['base_url'].value = details_url;
+        const {img_url}  = await taskRunner(page, details_task);
+        page.close()
+        return { ...game_details, img_url};
+    });
+    return await Promise.allSettled(fetch_img_urls);
+}
+
+async function getDataFromFitgirl(req, res){
+    const {browser} = req.puppeteer
+    const page = await browser.newPage()
+    const {keyword} = req.query
+    const search_task = domains.find((e)=>e['domain_name']==="Fitgirl").urls.find((e)=>e['name']==="Search").task
+    const details_task = domains.find((e)=>e['domain_name']==="Fitgirl").urls.find((e)=>e['name']==="Details").task
+    search_task.params['search_text'].value = keyword
+
+    try{
+        const data_array = await taskRunner(page, search_task)
+        const data_array_with_img_links = await getImagesFromFitgirl(data_array,details_task, browser)
+        console.log(data_array_with_img_links);
+        res.json({
+            success: true,
+            data: data_array_with_img_links,
+            message: 'Data Fectched Successfully'
+        })
+
+    }catch(err){
+        console.log(err);
+        return res.json({
+            success:false,
+            message:"Request Failed (or) No data for given keyword",
+            error:err.message
+        })
+    }finally{
+        page.close()
+    }
+}
+
+async function getDataFromSevenGamers(req, res){
+    const {browser} = req.puppeteer
+    const page = await browser.newPage()
+    const {keyword} = req.query
+    const search_task = domains.find((e)=>e['domain_name']==="SevenGamers").urls.find((e)=>e['name']==="Search").task
+    search_task.params['search_text'].value = keyword
+
+    try{
+        const streams_data_array = await taskRunner(page, search_task)
+        console.log(streams_data_array);
+        res.json({
+            success: true,
+            data: streams_data_array,
+            message: 'Data Fectched Successfully'
+        })
+
+    }catch(err){
+        console.log(err);
+        return res.json({
+            success:false,
+            message:"Request Failed (or) No data for given keyword",
+            error:err.message
+        })
+    }finally{
+        page.close()
+    }
+}
+
+
 async function getDomains(req, res){
     res.json({
         success:true,
@@ -189,5 +344,10 @@ module.exports = {
     getDomains,
     getDataFrom1337x,
     getDataFromPirateBay,
-    getDataFromBingeWatch
+    getDataFromBingeWatch,
+    getDataFromSoaperTv,
+    getDataFromCataz,
+    getDataFromFlixHQ,
+    getDataFromFitgirl,
+    getDataFromSevenGamers
 }

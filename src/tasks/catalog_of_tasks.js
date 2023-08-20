@@ -1,7 +1,13 @@
-const search_1337x_json = require('./1337x/search_1337x.task.json')
-const torrent_details_1337x_json = require('./1337x/torrent_details_1337x.task.json')
-const search_bingewatch_json = require('./bingewatch/search_bingewatch.task.json')
-const search_piratebay_json =  require('./piratebay/search_piratebay.task.json')
+const search_1337x_json = require('./torrents/1337x/search_1337x.task.json')
+const torrent_details_1337x_json = require('./torrents/1337x/torrent_details_1337x.task.json')
+const search_bingewatch_json = require('./streams/bingewatch/search_bingewatch.task.json')
+const search_soaper_json = require('./streams/soaper/search_soaper.task.json')
+const search_piratebay_json =  require('./torrents/piratebay/search_piratebay.task.json')
+const search_cataz_json = require('./streams/cataz/search_cataz.task.json')
+const search_flixhq_json = require('./streams/flixhq/search_flixhq.task.json')
+const search_firgirl_json = require('./games/fitgirl/search_fitgirl.task.json')
+const search_seven_gamers_json = require('./games/sevengamers/search_sevengames.task.json')
+const details_fitgirl_json = require('./games/fitgirl/details_fitgirl_task.json')
 
 const catalog = [
     {
@@ -33,6 +39,101 @@ const catalog = [
                 "name":"Search",
                 "task":search_bingewatch_json
             }
+        ]
+    },
+    {
+        "domain_name":"SoaperTv",
+        "urls":[
+            {
+                "name":"Search",
+                "task":search_soaper_json
+            }
+        ]
+    },
+    {
+        "domain_name":"Cataz",
+        "urls":[
+            {
+                "name":"Search",
+                "task":search_cataz_json
+            }
+        ]
+    },
+    {
+        "domain_name":"FlixHQ",
+        "urls":[
+            {
+                "name":"Search",
+                "task":search_flixhq_json
+            }
+        ]
+    },
+    {
+        "domain_name":"Fitgirl",
+        "urls":[
+            {
+                "name":"Search",
+                "task":search_firgirl_json
+            },
+            {
+                "name":"Details",
+                "task":details_fitgirl_json
+            }
+        ]
+    },
+    {
+        "domain_name":"SevenGamers",
+        "urls":[
+            {
+                "name":"Search",
+                "task":search_seven_gamers_json
+            }
+        ]
+    }
+]
+
+const newCatalog = [
+    {
+        "category_name":"Torrents",
+        "domains":[
+            {
+                "domain_name":"PirateBay",
+                
+            },
+            {
+                "domain_name":"1337x"
+            }
+        ]
+    },
+    {
+        "category_name":"Streams",
+        "domains":[
+            {
+                "domain_name":"BingeWatch"
+            },
+            {
+                "domain_name":"SoaperTv"
+            },
+            {
+                "domain_name":"Cataz"
+            },
+            {
+                "domain_name":"flixhq"
+            },
+            
+        ]
+    },
+    {
+        "catergory_name":"Games",
+        "domains":[
+            {
+                "domain_name":"Fitgirl"
+            },
+            {
+                "domain_name":"Seven Gamers"
+            },
+            
+            
         ]
     }
 ]

@@ -1,0 +1,50 @@
+{
+    "url": "{{base_url}}/search/{{search_text}}",
+    "params": {
+        "base_url": {
+            "value": "https://cataz.to",
+            "required": true
+        },
+        "search_text": {
+            "default": "helloasd",
+            "required": true
+        }
+    },
+    "selectors": [
+        {
+            "name": "title",
+            "format": "array",
+            "target": "innerText",
+            "selector": ".film-detail > .film-name > a"
+        },
+        {
+            "name": "info",
+            "format": "array",
+            "target": "innerText",
+            "selector": ".film-detail > .fd-infor"
+        },
+        {
+            "name": "img_url",
+            "format": "array",
+            "target": "src",
+            "selector": ".film-poster > img"
+        },
+        {
+            "name": "details_page_link",
+            "format": "array",
+            "target": "href",
+            "selector": ".film-poster > a"
+        }
+    ],
+    "result": {
+        "format": "array",
+        "waitForSelector": ".block_area-content.block_area-list.film_list.film_list-grid",
+        "parentElementSelector": ".block_area-content.block_area-list.film_list.film_list-grid > .film_list-wrap > .flw-item",
+        "data": [
+            "title",
+            "info",
+            "img_url",
+            "details_page_link"
+        ]
+    }
+}

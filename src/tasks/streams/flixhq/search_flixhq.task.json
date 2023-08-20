@@ -1,0 +1,51 @@
+{
+    "url": "{{base_url}}/?s={{search_text}}",
+    "params": {
+        "base_url":{
+            "value":"https://flixhq.click",
+            "required":true
+        },
+        "search_text": {
+            "value": "spider-man",
+            "default": "Avengers",
+            "required": true
+        }
+    },
+    "selectors": [
+        {
+            "name": "title",
+            "format": "array",
+            "target": "innerText",
+            "selector": "div .entry-title > a"
+        },
+        {
+            "name": "info",
+            "format": "array",
+            "target": "innerText",
+            "selector": "div .meta"
+        },
+        {
+            "name": "img_url",
+            "format": "array",
+            "target": "src",
+            "selector": "a > img"
+        },
+        {
+            "name": "details_page_link",
+            "format": "array",
+            "target": "href",
+            "selector": "div > a"
+        }
+    ],
+    "result": {
+        "format": "array",
+        "waitForSelector":"body > #body > .container",
+        "parentElementSelector":"body > #body > .container > .bl > .content > .filmlist.md.active > .item",
+        "data": [
+            "title",
+            "info",
+            "img_url",
+            "details_page_link"
+        ]
+    }
+}

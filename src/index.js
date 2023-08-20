@@ -24,8 +24,6 @@ async function attachPuppeteer(req, res, next){
     next()
 }
 
-const {PythonShell} = require('python-shell')
-
 const PORT = process.env.PORT || 3000
 
 /* config */

@@ -1,4 +1,6 @@
 const test_task = require('./taskChecker')
+const path = require('path')
+const timeUtil = require('../utils/date-time.utils')
 
 function replaceUrlParams(task){
     return task.url.replace(/{{(.*?)}}/g, (match, paramName) => {
@@ -17,22 +19,33 @@ function replaceUrlParams(task){
 
 async function scrapeAllSelectorsTogether(page, selectors_array, parentSelector){
     const pageFunction = (elements, selectors_array) =>{
+        if(elements===undefined || elements.length == 0){
+            /* parentElementSelector not present meaning there is no data to scrape */
+            
+            throw new Error(`No data found`)
+        }
+        
         return elements.map((e)=>{
             const result = {};
             const error = {};
             for(const selectorInfo of selectors_array){
                 const {name, target, selector} = selectorInfo
                 result[name] = e.querySelector(selector)
-                if(result[name]){
+                if(result[name] !== null){
                     if(target !== "innerText" && result[name].hasAttribute(target)){    
                         result[name] = result[name].getAttribute(target)
-                    }else{
-                        result[name] = result[name].innerText || ''
+                    }else if(target === 'innerHTML'){
+                        result[name] = result[name].innerHTML
                     }
-    
-                    if(!result[name]){
-                        error[name] = `No Data found for selector : ${selector}`
+                    else{
+                        result[name] = result[name].innerText
                     }
+                    
+                    if(result[name] == '' || result[name].length == 0){
+                        result[name] = `No Data found`
+                    }
+                }else{
+                    result[name] = `No Data found`
                 }
                 
                 /* todo: add fallbacks if no data found for selector */
@@ -40,8 +53,16 @@ async function scrapeAllSelectorsTogether(page, selectors_array, parentSelector)
             return result;
         })
     }
-
-    return await page.$$eval(parentSelector,pageFunction,selectors_array)
+    try{
+        
+        const result = await page.$$eval(parentSelector,pageFunction,selectors_array)
+        console.log(result);
+        return result 
+        
+    }catch(err){
+        console.log(err)
+        throw new Error(err.message)
+    }
 }
 
 async function scrapeSelectorsIndividually(page, selectors_array){
@@ -52,17 +73,29 @@ async function scrapeSelectorsIndividually(page, selectors_array){
         const {name, format, target, selector} = selectorInfo
 
         if(format === "array"){
-            result[name] = await page.$$eval(selector,
-                (elements, target)=>elements.map((e)=>{
-                    if(e.hasAttribute(target)) return e.getAttribute(target)
-                    return e.innerText || ''
-                }), target)
+            try{
+                result[name] = await page.$$eval(selector,
+                    (elements, target)=>elements.map((e)=>{
+                        if(e.hasAttribute(target)) return e.getAttribute(target)
+                        else if(target === 'innerHTML') return e.innerHTML || 'No Data Found'
+                        return e.innerText || 'No Data Found'
+                    }), target)
+            }catch(err){
+                console.log(`Error While evaluating selector with name : ${name}`);
+                throw new Error(`Error While evaluating selector with name : ${name}`)
+            }
         
         }else{
-            result[name] = await page.$eval(selector, (e, target)=>{
-                if(e.hasAttribute(target)) return e.getAttribute(target)
-                return e.innerText || ''
-            }, target)
+            try{
+                result[name] = await page.$eval(selector, (e, target)=>{
+                    if(e.hasAttribute(target)) return e.getAttribute(target)
+                    else if(target === 'innerHTML') return e.innerHTML || 'No Data Found'
+                    return e.innerText || 'No Data Found'
+                }, target)
+            }catch(err){
+                console.log(`Error While evaluating selector with name : ${name}`);
+                throw new Error(`Error While evaluating selector with name : ${name}`)
+            }
         }
     }
 
@@ -86,18 +119,64 @@ async function scrape(task, page){
 
     try{
         /* navigate to url and wait for document to load */
-        await page.goto(url, {waitUntil : 'domcontentloaded'})
-        await page.waitForSelector(task.selectors[0].selector,{timeout:3000})
+        try{
+            await page.goto(url/* , {waitUntil : 'networkidle2'} */)
+
+        }catch(err){
+            console.log(`Couldn't go to page : ${url}`);
+            throw new Error(`Couldn't go to page : ${url}`)
+        }
 
         /* only process selectors included in task.result.data */
         task.selectors = getSelectorsFromTaskResult(task)
 
         let result = {}
         if(task.result.format === 'array'){
-            await page.waitForSelector(task.result.parentElementSelector,{timeout:3000})
-            result = await scrapeAllSelectorsTogether(page, task.selectors, parentElementSelector = task.result.parentElementSelector)
+                if(task.result.waitForSelector){
+                    try{
+                        await page.waitForSelector(task.result.waitForSelector,{timeout:3000})  
+                    }catch(err){
+                        await page.screenshot({
+                            path: path.join(
+                                __dirname,
+                                '..',
+                                'request_failed_screenshots',
+                                ` DODI-REPACKS-${task.params.search_text.value || task.params.search_text.default}-${timeUtil()}.png`
+                            ), 
+                            fullPage: true
+                        })
+
+                        console.log("Page didn't load properly");
+                        throw new Error('Page didn\'t load properly')
+                    }  
+                }else{
+                    try{
+                        await page.waitForSelector(task.result.parentElementSelector,{timeout:3000})
+                    }catch(err){
+                        console.log("parentElementSelector Not Found even after 3sec");
+                        throw new Error("parentElementSelector Not Found even after 3sec")
+                    }
+                }
+            
+            result = await scrapeAllSelectorsTogether(page, task.selectors, task.result.parentElementSelector)
         }else{
-            await page.waitForSelector(task.selectors[0].selector,{timeout:3000})
+            
+                if(task.result.waitForSelector){
+                    try{
+                        await page.waitForSelector(task.result.waitForSelector,{timeout:3000})  
+                    }catch(err){
+                        console.log("Page didn't load properly");
+                        throw new Error('Page didn\'t load properly')
+                    }
+                }else{
+                    try{
+                        await page.waitForSelector(task.selectors[0].selector,{timeout:3000})
+                    }catch(err){
+                        console.log("first selector in selectors array Not Found even after 3sec");
+                        throw new Error("first selector in selectors array Not Found even after 3sec")
+                    }
+                }
+            
             result = await scrapeSelectorsIndividually(page, task.selectors)
         }
 

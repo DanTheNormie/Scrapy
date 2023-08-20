@@ -1,13 +1,12 @@
 {
-    "url":"https://1337x.unblockit.rsvp/search/{{search_text}}/1/",
+    "url":"{{base_url}}/search.php?q={{search_text}}",
     "params":{
-        "search_text":{
-            
-            "default":"Avengers",
+        "base_url":{
+            "value":"https://tpb26.ukpass.co",
             "required":true
         },
-        "page_number":{
-            "default":1,
+        "search_text":{
+            "default":"spidermanssxxxs",
             "required":true
         }
     },
@@ -16,49 +15,62 @@
             "name":"title",
             "format":"array",
             "target":"innerText",
-            "selector":"tbody tr .coll-1.name a:nth-child(2)"
+            "selector":".list-entry .list-item.item-name.item-title a"
         },
         {
             "name":"uploaded_on",
             "format":"array",
             "target":"innerText",
-            "selector":"tbody tr .coll-date"
+            "selector":".list-entry .list-item.item-uploaded label"
+        },
+        {
+            "name":"magnet_link",
+            "format":"array",
+            "target":"href",
+            "selector":".list-entry .item-icons a"
         },
         {
             "name":"size",
             "format":"array",
             "target":"innerText",
-            "selector":"tbody tr .coll-4.size"
+            "selector":".list-entry .list-item.item-size"
         },
-        
         {
             "name":"seeders",
             "format":"array",
             "target":"innerText",
-            "selector":"tbody tr .coll-2.seeds"
+            "selector":".list-entry .list-item.item-seed"
         },
         {
             "name":"leechers",
             "format":"array",
             "target":"innerText",
-            "selector":"tbody tr .coll-3.leeches"
+            "selector":".list-entry .list-item.item-leech"
+        },
+        {
+            "name":"uploaded_by",
+            "format":"array",
+            "target":"innerText",
+            "selector":".list-entry .list-item.item-user a"
         },
         {
             "name":"torrent_details_page_link",
             "format":"array",
             "target":"href",
-            "selector":".coll-1.name > a:nth-child(2)"
+            "selector":".list-entry > .list-item.item-title > a"
         }
     ],
     "result":{
         "format":"array",
-        "parentElementSelector":"tbody > tr",
+        "parentElementSelector":".list-entry",
         "data":[
             "title",
             "seeders",
             "leechers",
             "size",
+            "uploaded_by",
             "uploaded_on",
+            "magnet_link",
             "torrent_details_page_link"
         ]
     }

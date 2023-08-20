@@ -1,0 +1,50 @@
+{
+    "url": "{{base_url}}/search.html?keyword={{search_text}}",
+    "params": {
+        "base_url": {
+            "value": "https://soaper.tv",
+            "required": true
+        },
+        "search_text": {
+            "default": "show",
+            "required": true
+        }
+    },
+    "selectors": [
+        {
+            "name": "title",
+            "format": "array",
+            "target": "innerText",
+            "selector": "div:last-child > h5 > a"
+        },
+        {
+            "name": "released_on",
+            "format": "array",
+            "target": "innerText",
+            "selector": ".img-group > div"
+        },
+        {
+            "name": "img_url",
+            "format": "array",
+            "target": "src",
+            "selector": ".img-group > a > img"
+        },
+        {
+            "name": "details_page_link",
+            "format": "array",
+            "target": "href",
+            "selector": ".img-group > a"
+        }
+    ],
+    "result": {
+        "format": "array",
+        "waitForSelector": "body > div.content > div:nth-child(5) > div > div.col-sm-8.col-lg-8.col-xs-12 > div:nth-child(2) > div.panel-body > div > div > div > div > div:nth-child(1) > div > div,body > div.content > div:nth-child(5) > div > div.col-sm-8.col-lg-8.col-xs-12 > div",
+        "parentElementSelector": "body > div.content > div:nth-child(5) > div > div.col-sm-8.col-lg-8.col-xs-12 > div:nth-child(2) > div.panel-body > div > div > div > div > div:nth-child(1) > div > div,body > div.content > div:nth-child(5) > div > div.col-sm-8.col-lg-8.col-xs-12 > div:nth-child(3) > div.panel-body > div > div > div > div > div:nth-child(1) > div > div",
+        "data": [
+            "title",
+            "released_on",
+            "img_url",
+            "details_page_link"
+        ]
+    }
+}

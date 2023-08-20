@@ -1,6 +1,10 @@
 {
-    "url": "https://bingewatch.to/search?keyword={{search_text}}",
+    "url": "{{base_url}}/search?keyword={{search_text}}",
     "params": {
+        "base_url":{
+            "value":"https://bingewatch.to",
+            "required":true
+        },
         "search_text": {
             "default": "spidermanasdasxc",
             "required": true
@@ -20,7 +24,7 @@
             "selector": ".movie-thumbnail > a > img"
         },
         {
-            "name": "details_link",
+            "name": "details_page_link",
             "format": "array",
             "target": "href",
             "selector": ".movie-link"
@@ -39,7 +43,7 @@
             "title",
             "img_url",
             "info",
-            "details_link"
+            "details_page_link"
         ]
     }
 }

@@ -1,0 +1,24 @@
+{
+    "url": "{{base_url}}",
+    "params": {
+        "base_url": {
+            "default": "https://fitgirl-repacks.site/marvels-spider-man-miles-morales/",
+            "required": true
+        }
+    },
+    "selectors": [
+        {
+            "name": "img_url",
+            "format": "single",
+            "target": "src",
+            "selector": ".alignleft"
+        }
+    ],
+    "result": {
+        "format": "single",
+        "waitForSelector":".entry-content",
+        "data": [
+            "img_url"
+        ]
+    }
+}

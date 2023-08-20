@@ -1,0 +1,52 @@
+{
+    "url": "{{base_url}}/?s={{search_text}}",
+    "params": {
+        "base_url":{
+            "value":"https://www.seven-gamers.com",
+            "required":true
+        },
+        "search_text": {
+            "value": "spiderman",
+            "default": "Avengers",
+            "required": true
+        }
+    },
+    "selectors": [
+        {
+            "name": "title",
+            "format": "array",
+            "target": "href",
+            "selector": ".edgtf-post-title-area > .edgtf-post-title-area-inner > h5"
+        },
+        {
+            "name": "desc",
+            "format": "array",
+            "target": "href",
+            "selector": ".edgtf-post-title-area > .edgtf-post-title-area-inner > p"
+        },
+        {
+            "name": "img_url",
+            "format": "array",
+            "target": "src",
+            "selector": ".edgtf-post-image > a > img"
+        },
+        {
+            "name": "details_page_link",
+            "format": "array",
+            "target": "href",
+            "selector": ".edgtf-post-image > a"
+        }
+        
+    ],
+    "result": {
+        "format": "array",
+        "waitForSelector":".edgtf-search-page-holder",
+        "parentElementSelector":".edgtf-search-page-holder > article > div",
+        "data": [
+            "title",
+            "desc",
+            "img_url",
+            "details_page_link"
+        ]
+    }
+}

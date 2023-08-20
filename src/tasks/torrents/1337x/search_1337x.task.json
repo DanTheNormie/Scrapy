@@ -1,8 +1,16 @@
 {
-    "url":"https://pirate-proxy.mov/search.php?q={{search_text}}",
+    "url":"{{base_url}}/search/{{search_text}}/1/",
     "params":{
+        "base_url":{
+            "value":"https://1337x.unblockit.rsvp",
+            "required":true
+        },
         "search_text":{
-            "default":"spidermanssxxxs",
+            "default":"Avengers",
+            "required":true
+        },
+        "page_number":{
+            "default":1,
             "required":true
         }
     },
@@ -11,62 +19,49 @@
             "name":"title",
             "format":"array",
             "target":"innerText",
-            "selector":".list-entry .list-item.item-name.item-title a"
+            "selector":"tbody tr .coll-1.name a:nth-child(2)"
         },
         {
             "name":"uploaded_on",
             "format":"array",
             "target":"innerText",
-            "selector":".list-entry .list-item.item-uploaded label"
-        },
-        {
-            "name":"magnet_link",
-            "format":"array",
-            "target":"href",
-            "selector":".list-entry .item-icons a"
+            "selector":"tbody tr .coll-date"
         },
         {
             "name":"size",
             "format":"array",
             "target":"innerText",
-            "selector":".list-entry .list-item.item-size"
+            "selector":"tbody tr .coll-4.size"
         },
+        
         {
             "name":"seeders",
             "format":"array",
             "target":"innerText",
-            "selector":".list-entry .list-item.item-seed"
+            "selector":"tbody tr .coll-2.seeds"
         },
         {
             "name":"leechers",
             "format":"array",
             "target":"innerText",
-            "selector":".list-entry .list-item.item-leech"
-        },
-        {
-            "name":"uploaded_by",
-            "format":"array",
-            "target":"innerText",
-            "selector":".list-entry .list-item.item-user a"
+            "selector":"tbody tr .coll-3.leeches"
         },
         {
             "name":"torrent_details_page_link",
             "format":"array",
             "target":"href",
-            "selector":".list-entry > .list-item.item-title > a"
+            "selector":".coll-1.name > a:nth-child(2)"
         }
     ],
     "result":{
         "format":"array",
-        "parentElementSelector":".list-entry",
+        "parentElementSelector":"tbody > tr",
         "data":[
             "title",
             "seeders",
             "leechers",
             "size",
-            "uploaded_by",
             "uploaded_on",
-            "magnet_link",
             "torrent_details_page_link"
         ]
     }
